@@ -8,7 +8,10 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
+import Select, { MultiValue } from 'react-select';
+
 import { Listing } from '@/utils/types';
+import { Provider, providers } from '@/data/providers';
 
 type TableProps = {
   listings: Listing[];
@@ -16,6 +19,8 @@ type TableProps = {
 
 const Table: React.FC<TableProps> = ({ listings }) => {
   const [onlyRemote, setOnlyRemote] = useState(false);
+  const [selectedProvider, setSelectedProvider] =
+    useState<MultiValue<Provider>>();
 
   const columnHelper = createColumnHelper<Listing>();
 
@@ -55,7 +60,7 @@ const Table: React.FC<TableProps> = ({ listings }) => {
   return (
     <>
       <section>
-        <div>
+        <div className="filters">
           <div>
             <input
               type="checkbox"
@@ -70,7 +75,20 @@ const Table: React.FC<TableProps> = ({ listings }) => {
               Only Remote
             </label>
           </div>
+
+          <div>
+            <Select
+              onChange={(option) => {
+                console.log('changed to:  ', option);
+                setSelectedProvider(option);
+              }}
+              isMulti
+              options={providers}
+              placeholder="Select providers to filter..."
+            />
+          </div>
         </div>
+
         <div>Current filters:</div>
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
