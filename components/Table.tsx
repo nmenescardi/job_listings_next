@@ -12,6 +12,7 @@ import Select, { MultiValue } from 'react-select';
 
 import { Listing } from '@/utils/types';
 import { Provider, providers } from '@/data/providers';
+import { Tags, tags } from '@/data/tags';
 
 type TableProps = {
   listings: Listing[];
@@ -21,6 +22,7 @@ const Table: React.FC<TableProps> = ({ listings }) => {
   const [onlyRemote, setOnlyRemote] = useState(false);
   const [selectedProvider, setSelectedProvider] =
     useState<MultiValue<Provider>>();
+  const [selectedTags, setSelectedTags] = useState<MultiValue<Tags>>();
 
   const columnHelper = createColumnHelper<Listing>();
 
@@ -85,6 +87,18 @@ const Table: React.FC<TableProps> = ({ listings }) => {
               isMulti
               options={providers}
               placeholder="Select providers to filter..."
+            />
+          </div>
+
+          <div>
+            <Select
+              onChange={(option) => {
+                console.log('changed to:  ', option);
+                setSelectedTags(option);
+              }}
+              isMulti
+              options={tags}
+              placeholder="Select tags to filter..."
             />
           </div>
         </div>
