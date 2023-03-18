@@ -25,14 +25,35 @@ type TableProps = {
   listings: Listing[];
 };
 
-const Table: React.FC<TableProps> = ({ listings }) => {
-  const [onlyRemote, setOnlyRemote] = useState(false);
-  const [selectedProvider, setSelectedProvider] =
-    useState<MultiValue<Provider>>();
-  const [selectedTags, setSelectedTags] = useState<MultiValue<Tags>>();
-  const [hideFilters, setHideFilters] = useState(true);
+interface Filters {
+  onlyRemote?: boolean;
+  provider?: MultiValue<Provider>;
+  tags?: MultiValue<Tags>;
+}
 
+const initialFilters: Filters = {
+  onlyRemote: false,
+};
+
+const Table: React.FC<TableProps> = ({ listings }) => {
+  const [hideFilters, setHideFilters] = useState(true);
+  const [selectedFilters, setSelectedFilters] =
+    useState<Filters>(initialFilters);
+  const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
+  const [loadingResults, setLoadingResults] = useState(false);
   const columnHelper = createColumnHelper<Listing>();
+
+  const handleApplyFilters = async () => {
+    setLoadingResults(true);
+
+    // TODO remove and perform API call
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    await delay(1000);
+
+    setSelectedFilters({ ...newFilters });
+
+    setLoadingResults(false);
+  };
 
   const columns = [
     columnHelper.accessor('title', {
@@ -86,7 +107,14 @@ const Table: React.FC<TableProps> = ({ listings }) => {
                 type="checkbox"
                 id="only_remote"
                 className="mb-4"
-                onChange={() => setOnlyRemote((prevState) => !prevState)}
+                onChange={() =>
+                  setNewFilters((newFilters) => ({
+                    ...newFilters,
+                    onlyRemote: newFilters.onlyRemote
+                      ? !newFilters.onlyRemote
+                      : true,
+                  }))
+                }
               />
 
               <label
@@ -100,9 +128,11 @@ const Table: React.FC<TableProps> = ({ listings }) => {
             <div>
               <label htmlFor="tags_select">Providers:</label>
               <Select
-                onChange={(option) => {
-                  console.log('changed to:  ', option);
-                  setSelectedProvider(option);
+                onChange={(options) => {
+                  setNewFilters((newFilters) => ({
+                    ...newFilters,
+                    provider: options,
+                  }));
                 }}
                 isMulti
                 options={providers}
@@ -115,9 +145,11 @@ const Table: React.FC<TableProps> = ({ listings }) => {
               <label htmlFor="tags_select">Tags:</label>
               <Select
                 id="tags_select"
-                onChange={(option) => {
-                  console.log('changed to:  ', option);
-                  setSelectedTags(option);
+                onChange={(options) => {
+                  setNewFilters((newFilters) => ({
+                    ...newFilters,
+                    tags: options,
+                  }));
                 }}
                 isMulti
                 options={tags}
@@ -127,8 +159,12 @@ const Table: React.FC<TableProps> = ({ listings }) => {
             </div>
 
             <div className="mt-8 flex justify-between">
-              <Button size="xs" icon={ArrowPathIcon}>
-                {/* TODO pass loading */}
+              <Button
+                size="xs"
+                icon={ArrowPathIcon}
+                onClick={handleApplyFilters}
+                loading={!!loadingResults}
+              >
                 Apply Filters
               </Button>
 
@@ -144,7 +180,8 @@ const Table: React.FC<TableProps> = ({ listings }) => {
           </div>
         </div>
 
-        <div>Current filters:</div>
+        <div>Selected filters: {JSON.stringify(selectedFilters)} </div>
+        <div>New filters: {JSON.stringify(newFilters)} </div>
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
