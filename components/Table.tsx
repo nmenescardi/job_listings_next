@@ -19,7 +19,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/20/solid';
 
-import { Button, Icon } from '@tremor/react';
+import { Button, Icon, Badge } from '@tremor/react';
 
 type TableProps = {
   listings: Listing[];
@@ -37,8 +37,7 @@ const initialFilters: Filters = {
 
 const Table: React.FC<TableProps> = ({ listings }) => {
   const [hideFilters, setHideFilters] = useState(true);
-  const [selectedFilters, setSelectedFilters] =
-    useState<Filters>(initialFilters);
+  const [activeFilters, setActiveFilters] = useState<Filters>(initialFilters);
   const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
   const columnHelper = createColumnHelper<Listing>();
@@ -50,9 +49,10 @@ const Table: React.FC<TableProps> = ({ listings }) => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
     await delay(1000);
 
-    setSelectedFilters({ ...newFilters });
+    setActiveFilters({ ...newFilters });
 
     setLoadingResults(false);
+    setHideFilters(true);
   };
 
   const columns = [
@@ -180,8 +180,43 @@ const Table: React.FC<TableProps> = ({ listings }) => {
           </div>
         </div>
 
-        <div>Selected filters: {JSON.stringify(selectedFilters)} </div>
-        <div>New filters: {JSON.stringify(newFilters)} </div>
+        <div className="flex gap-2 mt-3">
+          <span>Active filters:</span>
+          <div className="inline">
+            {activeFilters.onlyRemote && <Badge>Only Remotes</Badge>}
+          </div>
+          <div className="inline">
+            {activeFilters?.provider?.length && (
+              <Badge>
+                {activeFilters?.provider?.length === 1 ? (
+                  <span>Provider: {activeFilters.provider[0].value}</span>
+                ) : (
+                  <span>
+                    <span>Providers: </span>
+                    {activeFilters.provider
+                      .map((provider) => provider.value)
+                      .join(', ')}
+                  </span>
+                )}
+              </Badge>
+            )}
+          </div>
+          <div className="inline">
+            {activeFilters?.tags?.length && (
+              <Badge>
+                {activeFilters?.tags?.length === 1 ? (
+                  <span>tags: {activeFilters.tags[0].value}</span>
+                ) : (
+                  <span>
+                    <span>Tags: </span>
+                    {activeFilters.tags.map((tags) => tags.value).join(', ')}
+                  </span>
+                )}
+              </Badge>
+            )}
+          </div>
+        </div>
+
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
