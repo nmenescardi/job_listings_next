@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   createColumnHelper,
   flexRender,
@@ -21,6 +21,8 @@ import {
 
 import { Button, Icon, Badge } from '@tremor/react';
 
+import useSWR from 'swr';
+
 type TableProps = {
   listings: Listing[];
 };
@@ -35,12 +37,48 @@ const initialFilters: Filters = {
   onlyRemote: false,
 };
 
+// const fetcher = (...args: Parameters<typeof fetch>) =>
+//   fetch(...args).then((res) => res.json());
+const fetcher = (...args: Parameters<typeof fetch>) => {
+  console.log('fetching: ', ...args);
+
+  return { fetched: true };
+};
+
 const Table: React.FC<TableProps> = ({ listings }) => {
+  const columnHelper = createColumnHelper<Listing>();
+
   const [hideFilters, setHideFilters] = useState(true);
   const [activeFilters, setActiveFilters] = useState<Filters>(initialFilters);
   const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
-  const columnHelper = createColumnHelper<Listing>();
+
+  const getApiUrl = () => {
+    // it'll only re-fetch for a new URL when the activeFilters changed
+    const onlyRemoteArg = `onlyRemote=${
+      !!activeFilters?.onlyRemote ? '1' : '0'
+    }`;
+
+    let url = `/api/data?${onlyRemoteArg}`;
+
+    if (activeFilters?.provider && activeFilters?.provider?.length > 0) {
+      url +=
+        '&providersIn=[' +
+        activeFilters?.provider?.map((provider) => provider.value).join(',') +
+        ']';
+    }
+
+    if (activeFilters?.tags && activeFilters?.tags?.length > 0) {
+      url +=
+        '&tagsIn=[' +
+        activeFilters?.tags?.map((tag) => tag.value).join(',') +
+        ']';
+    }
+
+    return url;
+  };
+
+  const { data } = useSWR(getApiUrl(), fetcher);
 
   const handleApplyFilters = async () => {
     setLoadingResults(true);
