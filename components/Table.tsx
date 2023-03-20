@@ -23,10 +23,6 @@ import { Button, Icon, Badge } from '@tremor/react';
 
 import useSWR from 'swr';
 
-type TableProps = {
-  listings: Listing[];
-};
-
 interface Filters {
   onlyRemote?: boolean;
   provider?: MultiValue<Provider>;
@@ -37,21 +33,26 @@ const initialFilters: Filters = {
   onlyRemote: false,
 };
 
-// const fetcher = (...args: Parameters<typeof fetch>) =>
-//   fetch(...args).then((res) => res.json());
+const API_TOKEN = process.env.NEXT_PUBLIC_API_AUTH_TOKEN;
 const fetcher = (...args: Parameters<typeof fetch>) => {
-  console.log('fetching: ', ...args);
+  const [url, ...rest] = args;
+  const headers = {
+    Authorization: `Bearer ${API_TOKEN}`,
+  };
 
-  return { fetched: true };
+  return fetch(url, { headers, credentials: 'include', ...rest }).then((res) =>
+    res.json()
+  );
 };
 
-const Table: React.FC<TableProps> = ({ listings }) => {
+const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
 
   const [hideFilters, setHideFilters] = useState(true);
   const [activeFilters, setActiveFilters] = useState<Filters>(initialFilters);
   const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
+  const [listings, setListings] = useState<Listing[]>([]);
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
@@ -59,7 +60,8 @@ const Table: React.FC<TableProps> = ({ listings }) => {
       !!activeFilters?.onlyRemote ? '1' : '0'
     }`;
 
-    let url = `/api/data?${onlyRemoteArg}`;
+    const domain = process.env.NEXT_PUBLIC_API_URL;
+    let url = `${domain}/listings?${onlyRemoteArg}`;
 
     if (activeFilters?.provider && activeFilters?.provider?.length > 0) {
       url +=
@@ -78,14 +80,16 @@ const Table: React.FC<TableProps> = ({ listings }) => {
     return url;
   };
 
-  const { data } = useSWR(getApiUrl(), fetcher);
+  const { data, isLoading, error } = useSWR(getApiUrl(), fetcher);
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setListings(data.data);
+    }
+  }, [isLoading, data]);
 
   const handleApplyFilters = async () => {
     setLoadingResults(true);
-
-    // TODO remove and perform API call
-    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-    await delay(1000);
 
     setActiveFilters({ ...newFilters });
 
@@ -97,13 +101,13 @@ const Table: React.FC<TableProps> = ({ listings }) => {
     columnHelper.accessor('title', {
       header: 'Title',
     }),
-    columnHelper.accessor('salaryRange', {
+    columnHelper.accessor('salary_range', {
       header: 'Salary Range',
     }),
     columnHelper.accessor('provider', {
       header: 'Provider',
     }),
-    columnHelper.accessor('createdAt', {
+    columnHelper.accessor('created_at', {
       header: 'Created At',
     }),
     columnHelper.accessor('tags', {
@@ -122,8 +126,12 @@ const Table: React.FC<TableProps> = ({ listings }) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  if (!listings) {
-    return <div>No data available</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error fetching data</div>;
   }
 
   return (

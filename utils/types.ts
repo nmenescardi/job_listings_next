@@ -1,8 +1,8 @@
 export type Listing = {
   title: string;
-  salaryRange: string;
+  salary_range: string;
   provider: string;
-  createdAt: string;
+  created_at: string;
   tags: string[];
   location: string;
 };
