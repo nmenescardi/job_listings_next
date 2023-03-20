@@ -161,6 +161,7 @@ const Table = () => {
                       : true,
                   }))
                 }
+                checked={newFilters.onlyRemote}
               />
 
               <label
@@ -184,6 +185,7 @@ const Table = () => {
                 options={providers}
                 placeholder="Select providers to filter..."
                 className="mb-3 mt-1"
+                value={newFilters.provider}
               />
             </div>
 
@@ -201,6 +203,7 @@ const Table = () => {
                 options={tags}
                 placeholder="Select tags to filter..."
                 className="mt-1"
+                value={newFilters.tags}
               />
             </div>
 
@@ -232,7 +235,7 @@ const Table = () => {
             {activeFilters.onlyRemote && <Badge>Only Remotes</Badge>}
           </div>
           <div className="inline">
-            {activeFilters?.provider?.length && (
+            {!!activeFilters?.provider?.length && (
               <Badge>
                 {activeFilters?.provider?.length === 1 ? (
                   <span>Provider: {activeFilters.provider[0].value}</span>
@@ -248,7 +251,7 @@ const Table = () => {
             )}
           </div>
           <div className="inline">
-            {activeFilters?.tags?.length && (
+            {!!activeFilters?.tags?.length && (
               <Badge>
                 {activeFilters?.tags?.length === 1 ? (
                   <span>tags: {activeFilters.tags[0].value}</span>
