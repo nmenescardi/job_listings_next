@@ -12,7 +12,7 @@ import Select, { MultiValue } from 'react-select';
 
 import { Listing } from '@/utils/types';
 import { Provider, providers } from '@/data/providers';
-import { Tags, tags } from '@/data/tags';
+import { Tags } from '@/data/tags';
 import {
   FunnelIcon,
   ArrowPathIcon,
@@ -45,6 +45,8 @@ const fetcher = (...args: Parameters<typeof fetch>) => {
   );
 };
 
+const domain = process.env.NEXT_PUBLIC_API_URL;
+
 const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
 
@@ -53,6 +55,7 @@ const Table = () => {
   const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
+  const [tags, setTags] = useState<Tags | []>([]);
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
@@ -60,7 +63,6 @@ const Table = () => {
       !!activeFilters?.onlyRemote ? '1' : '0'
     }`;
 
-    const domain = process.env.NEXT_PUBLIC_API_URL;
     let url = `${domain}/listings?${onlyRemoteArg}`;
 
     if (activeFilters?.provider && activeFilters?.provider?.length > 0) {
@@ -81,12 +83,27 @@ const Table = () => {
   };
 
   const { data, isLoading, error } = useSWR(getApiUrl(), fetcher);
+  const { data: dataTags, isLoading: loadingTags } = useSWR(
+    `${domain}/tags`,
+    fetcher
+  );
 
   useEffect(() => {
     if (!isLoading && data) {
       setListings(data.data);
     }
   }, [isLoading, data]);
+
+  useEffect(() => {
+    if (!loadingTags && dataTags) {
+      setTags(
+        dataTags.map((tag: string) => ({
+          label: tag,
+          value: tag,
+        }))
+      );
+    }
+  }, [loadingTags, dataTags]);
 
   const handleApplyFilters = async () => {
     setLoadingResults(true);
