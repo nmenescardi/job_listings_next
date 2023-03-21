@@ -23,6 +23,12 @@ import { Button, Icon, Badge } from '@tremor/react';
 
 import useSWR from 'swr';
 
+interface Pagination {
+  currentPage?: number;
+  lastPage?: number;
+  total?: number;
+}
+
 interface Filters {
   onlyRemote?: boolean;
   provider?: MultiValue<Provider>;
@@ -40,8 +46,8 @@ const fetcher = (...args: Parameters<typeof fetch>) => {
     Authorization: `Bearer ${API_TOKEN}`,
   };
 
-  return fetch(url, { headers, credentials: 'include', ...rest }).then((res) =>
-    res.json()
+  return fetch(url, { headers, credentials: 'include', ...rest }).then(
+    async (res) => res.json()
   );
 };
 
@@ -57,6 +63,7 @@ const Table = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
   const [perPage, setPerPage] = useState(10);
+  const [pagination, setPagination] = useState<Pagination>();
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
@@ -82,6 +89,8 @@ const Table = () => {
 
     url += '&perPage=' + perPage;
 
+    url += `&page=${pagination?.currentPage || 1}`;
+
     return url;
   };
 
@@ -94,8 +103,13 @@ const Table = () => {
   useEffect(() => {
     if (!isLoading && data) {
       setListings(data.data);
+      setPagination({
+        currentPage: data.current_page,
+        lastPage: data.last_page,
+        total: data.total,
+      });
     }
-  }, [isLoading, data]);
+  }, [isLoading, data, pagination]);
 
   useEffect(() => {
     if (!loadingTags && dataTags) {
@@ -329,41 +343,63 @@ const Table = () => {
           </tbody>
         </table>
         <div className="h-2" />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 mt-3 text-lg">
           <button
             className="border rounded p-1"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => {
+              setPagination((pagination) => ({
+                ...pagination,
+                currentPage: 1,
+              }));
+            }}
+            // disabled={!table.getCanPreviousPage()}
           >
             {'<<'}
           </button>
           <button
             className="border rounded p-1"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => {
+              setPagination((pagination) => ({
+                ...pagination,
+                currentPage: pagination?.currentPage
+                  ? pagination?.currentPage - 1
+                  : 1,
+              }));
+            }}
+            // disabled={!table.getCanPreviousPage()}
           >
             {'<'}
           </button>
           <button
             className="border rounded p-1"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              setPagination((pagination) => ({
+                ...pagination,
+                currentPage: pagination?.currentPage
+                  ? pagination?.currentPage + 1
+                  : 1,
+              }));
+            }}
+            // disabled={!table.getCanNextPage()}
           >
             {'>'}
           </button>
           <button
             className="border rounded p-1"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              setPagination((pagination) => ({
+                ...pagination,
+                currentPage: pagination?.lastPage,
+              }));
+            }}
+            // disabled={!table.getCanNextPage()}
           >
             {'>>'}
           </button>
           <span className="flex items-center gap-1">
             <div>Page</div>
-            <strong>
-              {table.getState().pagination.pageIndex + 1} of{' '}
-              {table.getPageCount()}
-            </strong>
+            <strong>{pagination?.currentPage}</strong> of{' '}
+            <strong>{pagination?.lastPage || 1}</strong>
           </span>
 
           <select
@@ -372,6 +408,7 @@ const Table = () => {
               table.setPageSize(Number(e.target.value));
               setPerPage(Number(e.target.value));
             }}
+            className="cursor-pointer"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
