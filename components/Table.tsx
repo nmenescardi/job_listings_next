@@ -55,7 +55,7 @@ const Table = () => {
   const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
-  const [tags, setTags] = useState<Tags | []>([]);
+  const [tags, setTags] = useState<Tags[]>();
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
