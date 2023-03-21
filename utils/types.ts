@@ -5,4 +5,5 @@ export type Listing = {
   created_at: string;
   tags: string[];
   location: string;
+  external_link?: string;
 };

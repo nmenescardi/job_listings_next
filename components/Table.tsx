@@ -109,7 +109,7 @@ const Table = () => {
         total: data.total,
       });
     }
-  }, [isLoading, data, pagination]);
+  }, [isLoading, data]);
 
   useEffect(() => {
     if (!loadingTags && dataTags) {
@@ -134,6 +134,16 @@ const Table = () => {
   const columns = [
     columnHelper.accessor('title', {
       header: 'Title',
+      cell: ({ row }) => (
+        <a
+          href={row.original.external_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700 underline flex items-center"
+        >
+          {row.original.title}
+        </a>
+      ),
     }),
     columnHelper.accessor('salary_range', {
       header: 'Salary Range',
