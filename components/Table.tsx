@@ -56,6 +56,7 @@ const Table = () => {
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
+  const [perPage, setPerPage] = useState(10);
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
@@ -78,6 +79,8 @@ const Table = () => {
         activeFilters?.tags?.map((tag) => tag.value).join(',') +
         ']';
     }
+
+    url += '&perPage=' + perPage;
 
     return url;
   };
@@ -364,9 +367,10 @@ const Table = () => {
           </span>
 
           <select
-            value={table.getState().pagination.pageSize}
+            value={perPage}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
+              setPerPage(Number(e.target.value));
             }}
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
