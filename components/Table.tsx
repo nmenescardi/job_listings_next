@@ -112,7 +112,7 @@ const Table = () => {
   }, [isLoading, data]);
 
   useEffect(() => {
-    if (!loadingTags && dataTags) {
+    if (!loadingTags && dataTags && dataTags?.length > 0) {
       setTags(
         dataTags.map((tag: string) => ({
           label: tag,
@@ -173,14 +173,13 @@ const Table = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (error) {
     return <div>Error fetching data</div>;
   }
 
   return (
     <>
-      <section>
+      <section data-testid="job-listings-table">
         <div>
           <button onClick={() => setHideFilters((prevState) => !prevState)}>
             <Icon icon={FunnelIcon} size="md" className="text-blue-500 px-0" />
