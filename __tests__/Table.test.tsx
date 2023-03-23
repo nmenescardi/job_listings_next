@@ -6,19 +6,23 @@ import { tags as tagsMockAPI } from '@/data/tags';
 
 // Mock the fetch function
 global.fetch = jest.fn((args) => {
+  let responseData = {};
+
   if (typeof args === 'string') {
     if (args.startsWith('/tags')) {
-      return Promise.resolve({
-        json: () => Promise.resolve(tagsMockAPI),
-      });
+      responseData = tagsMockAPI;
     }
 
     if (args.startsWith('/listings')) {
-      return Promise.resolve({
-        json: () => Promise.resolve(listingsMockAPI),
-      });
+      responseData = listingsMockAPI;
     }
   }
+
+  const response = {
+    json: () => Promise.resolve(responseData),
+  };
+
+  return Promise.resolve(response as Response);
 });
 
 describe('Table component', () => {
