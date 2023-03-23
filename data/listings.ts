@@ -1,6 +1,6 @@
 import { Listing } from '@/utils/types';
 
-interface ListingsMockAPI {
+export interface ListingsMockAPI {
   data: Listing[];
   current_page: number;
   total: number;
