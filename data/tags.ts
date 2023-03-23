@@ -1,3 +1,8 @@
+export interface Tags {
+  value: string;
+  label: string;
+}
+
 export const tags: string[] = [
   'a11y',
   'accessibility',
