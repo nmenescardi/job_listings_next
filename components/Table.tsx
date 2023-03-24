@@ -181,7 +181,10 @@ const Table = () => {
     <>
       <section data-testid="job-listings-table">
         <div>
-          <button onClick={() => setHideFilters((prevState) => !prevState)}>
+          <button
+            data-testid="filter-toggle"
+            onClick={() => setHideFilters((prevState) => !prevState)}
+          >
             <Icon icon={FunnelIcon} size="md" className="text-blue-500 px-0" />
             <span>Filter</span>
           </button>
@@ -193,6 +196,7 @@ const Table = () => {
           >
             <div className="">
               <input
+                data-testid="only-remote"
                 type="checkbox"
                 id="only_remote"
                 className="mb-4"
@@ -215,9 +219,11 @@ const Table = () => {
               </label>
             </div>
 
-            <div>
-              <label htmlFor="tags_select">Providers:</label>
+            <div data-testid="providers-selector">
+              <label htmlFor="providers_select">Providers:</label>
               <Select
+                inputId="providers_select"
+                name="providers_select"
                 onChange={(options) => {
                   setNewFilters((newFilters) => ({
                     ...newFilters,
@@ -232,10 +238,11 @@ const Table = () => {
               />
             </div>
 
-            <div>
-              <label htmlFor="tags_select">Tags:</label>
+            <div data-testid="tags-selector">
+              <label htmlFor="tags_selector">Tags:</label>
               <Select
-                id="tags_select"
+                name="tags_selector"
+                inputId="tags_selector"
                 onChange={(options) => {
                   setNewFilters((newFilters) => ({
                     ...newFilters,
@@ -252,6 +259,7 @@ const Table = () => {
 
             <div className="mt-8 flex justify-between">
               <Button
+                data-testid="apply-filters"
                 size="xs"
                 icon={ArrowPathIcon}
                 onClick={handleApplyFilters}

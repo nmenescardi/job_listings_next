@@ -5,6 +5,8 @@ import {
   fireEvent,
   act,
 } from '@testing-library/react';
+import selectEvent from 'react-select-event';
+
 import Table from '../components/Table';
 import { SWRConfig } from 'swr';
 import { listingsMockAPI, ListingsMockAPI } from '@/data/listings';
@@ -161,4 +163,62 @@ describe('Table component', () => {
     });
     expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
   });
+
+  test.only('applying filters adds specific arguments in the query string when fetching listings.', async () => {
+    // Mock to get the initial listings
+    global.fetch = mockFetch(tagsMockAPI, listingsMockAPI);
+
+    const expectedUriContaining = [
+      'onlyRemote=1',
+      'providersIn=[LinkedIn]',
+      'tagsIn=[nextjs]',
+    ];
+
+    render(
+      <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
+        <Table />
+      </SWRConfig>
+    );
+
+    // await the element is present
+    await waitFor(() => screen.getByTestId('job-listings-table'));
+
+    // Mock to get the url and control the numbers of calls
+    let receivedUrl = '';
+    global.fetch = jest.fn((arg) => {
+      receivedUrl = arg as string;
+      console.log(arg);
+
+      return Promise.resolve({} as Response);
+    });
+
+    // Click on filter toggle icon
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('filter-toggle'));
+    });
+
+    // Click on onlyRemote
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('only-remote'));
+    });
+
+    // Select providers
+    await selectEvent.select(screen.getByLabelText('Providers:'), ['LinkedIn']);
+
+    // Select tags
+    await selectEvent.select(screen.getByLabelText('Tags:'), ['nextjs']);
+
+    // Click on apply filters
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('apply-filters'));
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+
+    expectedUriContaining.forEach((param) => {
+      expect(receivedUrl).toContain(param);
+    });
+  });
+
+  // screen.debug(table2, 100000);
 });
