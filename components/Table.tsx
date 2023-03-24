@@ -352,8 +352,12 @@ const Table = () => {
           </tbody>
         </table>
         <div className="h-2" />
-        <div className="flex items-center gap-3 mt-3 text-lg">
+        <div
+          data-testid="pagination"
+          className="flex items-center gap-3 mt-3 text-lg"
+        >
           <button
+            data-testid="pagination__first"
             className="border rounded p-1"
             onClick={() => {
               setPagination((pagination) => ({
@@ -366,6 +370,7 @@ const Table = () => {
             {'<<'}
           </button>
           <button
+            data-testid="pagination__previous"
             className="border rounded p-1"
             onClick={() => {
               setPagination((pagination) => ({
@@ -380,6 +385,7 @@ const Table = () => {
             {'<'}
           </button>
           <button
+            data-testid="pagination__next"
             className="border rounded p-1"
             onClick={() => {
               setPagination((pagination) => ({
@@ -394,6 +400,7 @@ const Table = () => {
             {'>'}
           </button>
           <button
+            data-testid="pagination__last"
             className="border rounded p-1"
             onClick={() => {
               setPagination((pagination) => ({
@@ -405,13 +412,17 @@ const Table = () => {
           >
             {'>>'}
           </button>
-          <span className="flex items-center gap-1">
+          <span
+            data-testid="pagination__page"
+            className="flex items-center gap-1"
+          >
             <div>Page</div>
             <strong>{pagination?.currentPage}</strong> of{' '}
             <strong>{pagination?.lastPage || 1}</strong>
           </span>
 
           <select
+            data-testid="pagination__per_page"
             value={perPage}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));

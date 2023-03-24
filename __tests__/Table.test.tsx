@@ -1,4 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+} from '@testing-library/react';
 import Table from '../components/Table';
 import { SWRConfig } from 'swr';
 import { listingsMockAPI, ListingsMockAPI } from '@/data/listings';
@@ -14,7 +20,8 @@ const mockFetch = (tagsMockAPI: string[], listingsMockAPI: ListingsMockAPI) =>
       }
 
       if (args.startsWith('/listings')) {
-        responseData = listingsMockAPI;
+        const page = args.match(/page=(\d+)/);
+        responseData = listingsMockAPI(page ? +page[1] : 1);
       }
     }
 
@@ -32,7 +39,7 @@ describe('Table component', () => {
 
   test('renders initial state correctly', async () => {
     global.fetch = mockFetch(tagsMockAPI, listingsMockAPI);
-    const firstListing = listingsMockAPI.data[0];
+    const firstListing = listingsMockAPI().data[0];
 
     render(
       <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
@@ -59,12 +66,12 @@ describe('Table component', () => {
   });
 
   test('renders table with no data', async () => {
-    global.fetch = mockFetch(tagsMockAPI, {
+    global.fetch = mockFetch(tagsMockAPI, () => ({
       data: [],
       total: 0,
       current_page: 1,
       last_page: 1,
-    });
+    }));
 
     render(
       <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
@@ -76,12 +83,82 @@ describe('Table component', () => {
       screen.getByTestId('job-listings-table')
     );
 
-    screen.debug(tableElement, 100000);
+    // screen.debug(tableElement, 100000);
 
     expect(tableElement).toBeInTheDocument();
 
     const tbody = tableElement.querySelector('tbody');
     expect(tbody).toBeTruthy();
     expect(tbody?.children.length).toBe(0);
+  });
+
+  test('pagination works correctly', async () => {
+    global.fetch = mockFetch(tagsMockAPI, listingsMockAPI);
+
+    render(
+      <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
+        <Table />
+      </SWRConfig>
+    );
+
+    const tableElement = await waitFor(() =>
+      screen.getByTestId('job-listings-table')
+    );
+
+    // Check the main container is present
+    const paginationElement = await waitFor(() =>
+      screen.getByTestId('pagination')
+    );
+
+    expect(paginationElement).toBeInTheDocument();
+
+    // Pages text
+    function hasPaginationText(
+      element: HTMLElement,
+      expectedPage: string,
+      expectedTotalPages: string
+    ) {
+      const pageText = element.querySelector('div')?.textContent?.trim();
+      const strongElements = element.querySelectorAll('strong');
+      const pageNumber = strongElements[0]?.textContent?.trim();
+      const totalPages = strongElements[1]?.textContent?.trim();
+
+      return (
+        pageText === 'Page' &&
+        pageNumber === expectedPage &&
+        totalPages === expectedTotalPages
+      );
+    }
+    const paginationText = () => screen.getByTestId('pagination__page');
+    expect(paginationText()).toBeInTheDocument();
+    expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
+
+    // click next page number
+    const nextPageButton = screen.getByTestId('pagination__next');
+    await act(async () => {
+      fireEvent.click(nextPageButton);
+    });
+    expect(hasPaginationText(paginationText(), '2', '3')).toBe(true);
+
+    //  click previous page
+    const previousPageButton = screen.getByTestId('pagination__previous');
+    await act(async () => {
+      fireEvent.click(previousPageButton);
+    });
+    expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
+
+    // click last page
+    const lastPageButton = screen.getByTestId('pagination__last');
+    await act(async () => {
+      fireEvent.click(lastPageButton);
+    });
+    expect(hasPaginationText(paginationText(), '3', '3')).toBe(true);
+
+    // click on first page
+    const firstPageButton = screen.getByTestId('pagination__first');
+    await act(async () => {
+      fireEvent.click(firstPageButton);
+    });
+    expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
   });
 });

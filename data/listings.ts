@@ -1,11 +1,13 @@
 import { Listing } from '@/utils/types';
 
-export interface ListingsMockAPI {
+export interface ListingsMockAPIData {
   data: Listing[];
   current_page: number;
   total: number;
   last_page: number;
 }
+
+export type ListingsMockAPI = (page?: number) => ListingsMockAPIData;
 
 export const listings: Listing[] = [
   {
@@ -317,9 +319,9 @@ export const listings: Listing[] = [
   },
 ];
 
-export const listingsMockAPI: ListingsMockAPI = {
+export const listingsMockAPI: ListingsMockAPI = (currentPage?: number) => ({
   data: listings,
   total: listings.length,
-  current_page: 1,
+  current_page: currentPage ?? 1,
   last_page: Math.round(listings.length / 10), // TODO: make per_page dynamic
-};
+});
