@@ -15,12 +15,7 @@ import { Tags } from '@/data/tags';
 
 import Filters, { FiltersType } from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
-
-interface Pagination {
-  currentPage?: number;
-  lastPage?: number;
-  total?: number;
-}
+import Pagination, { PaginationI } from '@/components/Table/Pagination';
 
 const initialFilters: FiltersType = {
   onlyRemote: false,
@@ -51,7 +46,7 @@ const Table = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState<Pagination>();
+  const [pagination, setPagination] = useState<PaginationI>();
 
   const getApiUrl = () => {
     // it'll only re-fetch for a new URL when the activeFilters changed
@@ -158,6 +153,11 @@ const Table = () => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const handlePerPageChange = (perPage: number) => {
+    table.setPageSize(perPage);
+    setPerPage(perPage);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -224,91 +224,13 @@ const Table = () => {
           </tbody>
         </table>
         <div className="h-2" />
-        <div
-          data-testid="pagination"
-          className="flex items-center gap-3 mt-3 text-lg"
-        >
-          <button
-            data-testid="pagination__first"
-            className="border rounded p-1"
-            onClick={() => {
-              setPagination((pagination) => ({
-                ...pagination,
-                currentPage: 1,
-              }));
-            }}
-            // disabled={!table.getCanPreviousPage()}
-          >
-            {'<<'}
-          </button>
-          <button
-            data-testid="pagination__previous"
-            className="border rounded p-1"
-            onClick={() => {
-              setPagination((pagination) => ({
-                ...pagination,
-                currentPage: pagination?.currentPage
-                  ? pagination?.currentPage - 1
-                  : 1,
-              }));
-            }}
-            // disabled={!table.getCanPreviousPage()}
-          >
-            {'<'}
-          </button>
-          <button
-            data-testid="pagination__next"
-            className="border rounded p-1"
-            onClick={() => {
-              setPagination((pagination) => ({
-                ...pagination,
-                currentPage: pagination?.currentPage
-                  ? pagination?.currentPage + 1
-                  : 1,
-              }));
-            }}
-            // disabled={!table.getCanNextPage()}
-          >
-            {'>'}
-          </button>
-          <button
-            data-testid="pagination__last"
-            className="border rounded p-1"
-            onClick={() => {
-              setPagination((pagination) => ({
-                ...pagination,
-                currentPage: pagination?.lastPage,
-              }));
-            }}
-            // disabled={!table.getCanNextPage()}
-          >
-            {'>>'}
-          </button>
-          <span
-            data-testid="pagination__page"
-            className="flex items-center gap-1"
-          >
-            <div>Page</div>
-            <strong>{pagination?.currentPage}</strong> of{' '}
-            <strong>{pagination?.lastPage || 1}</strong>
-          </span>
 
-          <select
-            data-testid="pagination__per_page"
-            value={perPage}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value));
-              setPerPage(Number(e.target.value));
-            }}
-            className="cursor-pointer"
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Pagination
+          pagination={pagination}
+          setPagination={setPagination}
+          perPage={perPage}
+          handlePerPageChange={handlePerPageChange}
+        />
       </section>
     </>
   );
