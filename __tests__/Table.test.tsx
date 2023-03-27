@@ -164,7 +164,7 @@ describe('Table component', () => {
     expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
   });
 
-  test.only('applying filters adds specific arguments in the query string when fetching listings.', async () => {
+  test('applying filters adds specific arguments in the query string when fetching listings.', async () => {
     // Mock to get the initial listings
     global.fetch = mockFetch(tagsMockAPI, listingsMockAPI);
 

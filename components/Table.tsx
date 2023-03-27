@@ -8,20 +8,14 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-import Select, { MultiValue } from 'react-select';
-
-import { Listing } from '@/utils/types';
-import { Provider, providers } from '@/data/providers';
-import { Tags } from '@/data/tags';
-import {
-  FunnelIcon,
-  ArrowPathIcon,
-  XMarkIcon,
-} from '@heroicons/react/20/solid';
-
-import { Button, Icon, Badge } from '@tremor/react';
+import { Badge } from '@tremor/react';
 
 import useSWR from 'swr';
+
+import { Listing } from '@/utils/types';
+import { Tags } from '@/data/tags';
+
+import Filters, { FiltersType } from '@/components/Filters';
 
 interface Pagination {
   currentPage?: number;
@@ -29,13 +23,7 @@ interface Pagination {
   total?: number;
 }
 
-interface Filters {
-  onlyRemote?: boolean;
-  provider?: MultiValue<Provider>;
-  tags?: MultiValue<Tags>;
-}
-
-const initialFilters: Filters = {
+const initialFilters: FiltersType = {
   onlyRemote: false,
 };
 
@@ -57,8 +45,9 @@ const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
 
   const [hideFilters, setHideFilters] = useState(true);
-  const [activeFilters, setActiveFilters] = useState<Filters>(initialFilters);
-  const [newFilters, setNewFilters] = useState<Filters>(initialFilters);
+  const [activeFilters, setActiveFilters] =
+    useState<FiltersType>(initialFilters);
+  const [newFilters, setNewFilters] = useState<FiltersType>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
@@ -180,106 +169,15 @@ const Table = () => {
   return (
     <>
       <section data-testid="job-listings-table">
-        <div>
-          <button
-            data-testid="filter-toggle"
-            onClick={() => setHideFilters((prevState) => !prevState)}
-          >
-            <Icon icon={FunnelIcon} size="md" className="text-blue-500 px-0" />
-            <span>Filter</span>
-          </button>
-          <div
-            className={`
-              absolute bg-white p-5 border shadow-lg transition z-10 rounded-lg ring-1 min-w-[350px]
-              ${hideFilters ? 'hidden' : ''}
-            `}
-          >
-            <div className="">
-              <input
-                data-testid="only-remote"
-                type="checkbox"
-                id="only_remote"
-                className="mb-4"
-                onChange={() =>
-                  setNewFilters((newFilters) => ({
-                    ...newFilters,
-                    onlyRemote: newFilters.onlyRemote
-                      ? !newFilters.onlyRemote
-                      : true,
-                  }))
-                }
-                checked={newFilters.onlyRemote}
-              />
-
-              <label
-                htmlFor="only_remote"
-                className="ml-2 select-none cursor-pointer"
-              >
-                Only Remote
-              </label>
-            </div>
-
-            <div data-testid="providers-selector">
-              <label htmlFor="providers_select">Providers:</label>
-              <Select
-                inputId="providers_select"
-                name="providers_select"
-                onChange={(options) => {
-                  setNewFilters((newFilters) => ({
-                    ...newFilters,
-                    provider: options,
-                  }));
-                }}
-                isMulti
-                options={providers}
-                placeholder="Select providers to filter..."
-                className="mb-3 mt-1"
-                value={newFilters.provider}
-              />
-            </div>
-
-            <div data-testid="tags-selector">
-              <label htmlFor="tags_selector">Tags:</label>
-              <Select
-                name="tags_selector"
-                inputId="tags_selector"
-                onChange={(options) => {
-                  setNewFilters((newFilters) => ({
-                    ...newFilters,
-                    tags: options,
-                  }));
-                }}
-                isMulti
-                options={tags}
-                placeholder="Select tags to filter..."
-                className="mt-1"
-                value={newFilters.tags}
-              />
-            </div>
-
-            <div className="mt-8 flex justify-between">
-              <Button
-                data-testid="apply-filters"
-                size="xs"
-                icon={ArrowPathIcon}
-                onClick={handleApplyFilters}
-                loading={!!loadingResults}
-              >
-                Apply Filters
-              </Button>
-
-              <Button
-                size="xs"
-                variant="secondary"
-                color="red"
-                icon={XMarkIcon}
-              >
-                Clear Filters
-              </Button>
-            </div>
-          </div>
-        </div>
-
+        <Filters
+          hideFilters={hideFilters}
+          setHideFilters={setHideFilters}
+          newFilters={newFilters}
+          setNewFilters={setNewFilters}
+          loadingResults={loadingResults}
+          tags={tags}
+          handleApplyFilters={handleApplyFilters}
+        />
         <div className="flex gap-2 mt-3">
           <span>Active filters:</span>
           <div className="inline">
