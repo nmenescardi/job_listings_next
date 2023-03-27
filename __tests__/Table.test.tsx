@@ -187,7 +187,6 @@ describe('Table component', () => {
     let receivedUrl = '';
     global.fetch = jest.fn((arg) => {
       receivedUrl = arg as string;
-      console.log(arg);
 
       return Promise.resolve({} as Response);
     });

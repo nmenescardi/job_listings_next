@@ -8,14 +8,13 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-import { Badge } from '@tremor/react';
-
 import useSWR from 'swr';
 
 import { Listing } from '@/utils/types';
 import { Tags } from '@/data/tags';
 
 import Filters, { FiltersType } from '@/components/Filters';
+import ActiveFilters from '@/components/ActiveFilters';
 
 interface Pagination {
   currentPage?: number;
@@ -179,40 +178,7 @@ const Table = () => {
           handleApplyFilters={handleApplyFilters}
         />
         <div className="flex gap-2 mt-3">
-          <span>Active filters:</span>
-          <div className="inline">
-            {activeFilters.onlyRemote && <Badge>Only Remotes</Badge>}
-          </div>
-          <div className="inline">
-            {!!activeFilters?.provider?.length && (
-              <Badge>
-                {activeFilters?.provider?.length === 1 ? (
-                  <span>Provider: {activeFilters.provider[0].value}</span>
-                ) : (
-                  <span>
-                    <span>Providers: </span>
-                    {activeFilters.provider
-                      .map((provider) => provider.value)
-                      .join(', ')}
-                  </span>
-                )}
-              </Badge>
-            )}
-          </div>
-          <div className="inline">
-            {!!activeFilters?.tags?.length && (
-              <Badge>
-                {activeFilters?.tags?.length === 1 ? (
-                  <span>tags: {activeFilters.tags[0].value}</span>
-                ) : (
-                  <span>
-                    <span>Tags: </span>
-                    {activeFilters.tags.map((tags) => tags.value).join(', ')}
-                  </span>
-                )}
-              </Badge>
-            )}
-          </div>
+          <ActiveFilters activeFilters={activeFilters} />
         </div>
 
         <table style={{ borderCollapse: 'collapse', width: '100%' }}>
