@@ -16,6 +16,7 @@ interface FiltersProps {
   loadingResults: boolean;
   tags: Tags[] | undefined;
   handleApplyFilters: () => Promise<void>;
+  handleResetFilters: () => Promise<void>;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -26,7 +27,15 @@ const Filters: React.FC<FiltersProps> = ({
   loadingResults,
   tags,
   handleApplyFilters,
+  handleResetFilters,
 }) => {
+  const providerKey =
+    'provider_key' +
+    newFilters?.provider?.map((provider) => provider.value).join('');
+
+  const tagsKey =
+    'tags_key' + newFilters?.tags?.map((tag) => tag.value).join('');
+
   return (
     <>
       <div>
@@ -69,6 +78,7 @@ const Filters: React.FC<FiltersProps> = ({
           <div data-testid="providers-selector">
             <label htmlFor="providers_select">Providers:</label>
             <Select
+              key={providerKey}
               inputId="providers_select"
               name="providers_select"
               onChange={(options) => {
@@ -88,6 +98,7 @@ const Filters: React.FC<FiltersProps> = ({
           <div data-testid="tags-selector">
             <label htmlFor="tags_selector">Tags:</label>
             <Select
+              key={tagsKey}
               name="tags_selector"
               inputId="tags_selector"
               onChange={(options) => {
@@ -115,7 +126,13 @@ const Filters: React.FC<FiltersProps> = ({
               Apply Filters
             </Button>
 
-            <Button size="xs" variant="secondary" color="red" icon={XMarkIcon}>
+            <Button
+              size="xs"
+              variant="secondary"
+              color="red"
+              icon={XMarkIcon}
+              onClick={handleResetFilters}
+            >
               Clear Filters
             </Button>
           </div>

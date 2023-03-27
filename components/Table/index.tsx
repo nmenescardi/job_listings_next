@@ -21,6 +21,8 @@ import Pagination from '@/components/Table/Pagination';
 
 const initialFilters: FiltersType = {
   onlyRemote: false,
+  provider: undefined,
+  tags: undefined,
 };
 
 const Table = () => {
@@ -70,6 +72,16 @@ const Table = () => {
     setLoadingResults(true);
 
     setActiveFilters({ ...newFilters });
+
+    setLoadingResults(false);
+    setHideFilters(true);
+  };
+
+  const handleResetFilters = async () => {
+    setLoadingResults(true);
+
+    setNewFilters({ ...initialFilters });
+    setActiveFilters({ ...initialFilters });
 
     setLoadingResults(false);
     setHideFilters(true);
@@ -137,6 +149,7 @@ const Table = () => {
           loadingResults={loadingResults}
           tags={tags}
           handleApplyFilters={handleApplyFilters}
+          handleResetFilters={handleResetFilters}
         />
         <div className="flex gap-2 mt-3">
           <ActiveFilters activeFilters={activeFilters} />
