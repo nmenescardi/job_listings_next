@@ -1,5 +1,5 @@
 import { Badge } from '@tremor/react';
-import { FiltersType } from '@/components/Filters';
+import { FiltersType } from '@/components/Table/Filters';
 import { Tags } from '@/data/tags';
 import { Provider } from '@/data/providers';
 import { MultiValue } from 'react-select';

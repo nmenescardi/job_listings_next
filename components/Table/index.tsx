@@ -13,8 +13,8 @@ import useSWR from 'swr';
 import { Listing } from '@/utils/types';
 import { Tags } from '@/data/tags';
 
-import Filters, { FiltersType } from '@/components/Filters';
-import ActiveFilters from '@/components/ActiveFilters';
+import Filters, { FiltersType } from '@/components/Table/Filters';
+import ActiveFilters from '@/components/Table/ActiveFilters';
 
 interface Pagination {
   currentPage?: number;
