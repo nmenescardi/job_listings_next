@@ -8,7 +8,8 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-import useSWR from 'swr';
+import useListings from '@/hooks/useListings';
+import useTags from '@/hooks/useTags';
 
 import { Listing } from '@/utils/types';
 import { Tags } from '@/data/tags';
@@ -20,20 +21,6 @@ import Pagination, { PaginationI } from '@/components/Table/Pagination';
 const initialFilters: FiltersType = {
   onlyRemote: false,
 };
-
-const API_TOKEN = process.env.NEXT_PUBLIC_API_AUTH_TOKEN;
-const fetcher = (...args: Parameters<typeof fetch>) => {
-  const [url, ...rest] = args;
-  const headers = {
-    Authorization: `Bearer ${API_TOKEN}`,
-  };
-
-  return fetch(url, { headers, credentials: 'include', ...rest }).then(
-    async (res) => res.json()
-  );
-};
-
-const domain = process.env.NEXT_PUBLIC_API_URL;
 
 const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
@@ -48,51 +35,24 @@ const Table = () => {
   const [perPage, setPerPage] = useState(10);
   const [pagination, setPagination] = useState<PaginationI>();
 
-  const getApiUrl = () => {
-    // it'll only re-fetch for a new URL when the activeFilters changed
-    const onlyRemoteArg = `onlyRemote=${
-      !!activeFilters?.onlyRemote ? '1' : '0'
-    }`;
+  const {
+    data: dataListings,
+    isLoading: loadingListings,
+    error,
+  } = useListings(activeFilters, perPage, pagination?.currentPage);
 
-    let url = `${domain}/listings?${onlyRemoteArg}`;
-
-    if (activeFilters?.provider && activeFilters?.provider?.length > 0) {
-      url +=
-        '&providersIn=[' +
-        activeFilters?.provider?.map((provider) => provider.value).join(',') +
-        ']';
-    }
-
-    if (activeFilters?.tags && activeFilters?.tags?.length > 0) {
-      url +=
-        '&tagsIn=[' +
-        activeFilters?.tags?.map((tag) => tag.value).join(',') +
-        ']';
-    }
-
-    url += '&perPage=' + perPage;
-
-    url += `&page=${pagination?.currentPage || 1}`;
-
-    return url;
-  };
-
-  const { data, isLoading, error } = useSWR(getApiUrl(), fetcher);
-  const { data: dataTags, isLoading: loadingTags } = useSWR(
-    `${domain}/tags`,
-    fetcher
-  );
+  const { data: dataTags, isLoading: loadingTags } = useTags();
 
   useEffect(() => {
-    if (!isLoading && data) {
-      setListings(data.data);
+    if (!loadingListings && dataListings) {
+      setListings(dataListings.data);
       setPagination({
-        currentPage: data.current_page,
-        lastPage: data.last_page,
-        total: data.total,
+        currentPage: dataListings.current_page,
+        lastPage: dataListings.last_page,
+        total: dataListings.total,
       });
     }
-  }, [isLoading, data]);
+  }, [loadingListings, dataListings]);
 
   useEffect(() => {
     if (!loadingTags && dataTags && dataTags?.length > 0) {
@@ -158,7 +118,7 @@ const Table = () => {
     setPerPage(perPage);
   };
 
-  if (isLoading) {
+  if (loadingListings) {
     return <div>Loading...</div>;
   }
   if (error) {
