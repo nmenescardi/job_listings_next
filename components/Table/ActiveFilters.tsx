@@ -36,7 +36,14 @@ interface ActiveFiltersProps {
 const ActiveFilters: React.FC<ActiveFiltersProps> = ({ activeFilters }) => {
   return (
     <>
-      <span>Active filters:</span>
+      {!!activeFilters.onlyRemote ||
+      !!activeFilters?.provider ||
+      !!activeFilters?.tags ? (
+        <span>Active filters:</span>
+      ) : (
+        <span>No filters applied</span>
+      )}
+
       <div className="inline">
         {activeFilters.onlyRemote && <Badge>Only Remotes</Badge>}
       </div>
