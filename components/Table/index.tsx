@@ -140,7 +140,7 @@ const Table = () => {
 
   return (
     <>
-      <section data-testid="job-listings-table">
+      <section data-testid="job-listings-table" className="w-full">
         <Filters
           hideFilters={hideFilters}
           setHideFilters={setHideFilters}
