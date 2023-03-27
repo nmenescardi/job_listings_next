@@ -1,7 +1,5 @@
-export interface Provider {
-  value: string;
-  label: string;
-}
+import { Provider } from '@/utils/types';
+
 export const providers: Provider[] = [
   { value: 'LinkedIn', label: 'LinkedIn' },
   { value: 'Indeed', label: 'Indeed' },

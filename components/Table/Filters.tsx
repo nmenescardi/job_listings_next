@@ -1,18 +1,12 @@
-import Select, { MultiValue } from 'react-select';
+import Select from 'react-select';
 import {
   FunnelIcon,
   ArrowPathIcon,
   XMarkIcon,
 } from '@heroicons/react/20/solid';
 import { Button, Icon } from '@tremor/react';
-import { providers, Provider } from '@/data/providers';
-import { Tags } from '@/data/tags';
-
-export type FiltersType = {
-  onlyRemote?: boolean;
-  provider?: MultiValue<Provider>;
-  tags?: MultiValue<Tags>;
-};
+import { providers } from '@/data/providers';
+import { FiltersType, Tags, Provider } from '@/utils/types';
 
 interface FiltersProps {
   hideFilters: boolean;

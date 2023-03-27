@@ -12,11 +12,12 @@ import useListings from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
 
 import { Listing } from '@/utils/types';
-import { Tags } from '@/data/tags';
 
-import Filters, { FiltersType } from '@/components/Table/Filters';
+import { FiltersType, Tags, PaginationType } from '@/utils/types';
+
+import Filters from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
-import Pagination, { PaginationI } from '@/components/Table/Pagination';
+import Pagination from '@/components/Table/Pagination';
 
 const initialFilters: FiltersType = {
   onlyRemote: false,
@@ -33,7 +34,7 @@ const Table = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
   const [perPage, setPerPage] = useState(10);
-  const [pagination, setPagination] = useState<PaginationI>();
+  const [pagination, setPagination] = useState<PaginationType>();
 
   const {
     data: dataListings,

@@ -1,12 +1,10 @@
-export interface PaginationI {
-  currentPage?: number;
-  lastPage?: number;
-  total?: number;
-}
+import { PaginationType } from '@/utils/types';
 
 interface PaginationProps {
-  pagination: PaginationI | undefined;
-  setPagination: React.Dispatch<React.SetStateAction<PaginationI | undefined>>;
+  pagination: PaginationType | undefined;
+  setPagination: React.Dispatch<
+    React.SetStateAction<PaginationType | undefined>
+  >;
   perPage: number;
   handlePerPageChange: (perPage: number) => void;
 }

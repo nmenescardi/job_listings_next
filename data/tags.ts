@@ -1,7 +1,4 @@
-export interface Tags {
-  value: string;
-  label: string;
-}
+import { Tags } from '@/utils/types';
 
 export const tags: string[] = [
   'a11y',

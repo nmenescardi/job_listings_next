@@ -1,4 +1,4 @@
-import { FiltersType } from '@/components/Table/Filters';
+import { FiltersType } from '@/utils/types';
 import { API_DOMAIN, fetcher, swrOptions } from '@/hooks/common';
 import useSWR from 'swr';
 

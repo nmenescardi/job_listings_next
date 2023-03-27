@@ -1,7 +1,5 @@
 import { Badge } from '@tremor/react';
-import { FiltersType } from '@/components/Table/Filters';
-import { Tags } from '@/data/tags';
-import { Provider } from '@/data/providers';
+import { FiltersType, Tags, Provider } from '@/utils/types';
 import { MultiValue } from 'react-select';
 
 interface InlineBadgesProps {
