@@ -1,12 +1,8 @@
-const API_TOKEN = process.env.NEXT_PUBLIC_API_AUTH_TOKEN;
-
-export const API_DOMAIN = process.env.NEXT_PUBLIC_API_URL;
+export const API_DOMAIN = process.env.NEXT_PUBLIC_API_URL + '/api';
 
 export const fetcher = (...args: Parameters<typeof fetch>) => {
   const [url, ...rest] = args;
-  const headers = {
-    Authorization: `Bearer ${API_TOKEN}`,
-  };
+  const headers = {};
 
   return fetch(url, { headers, credentials: 'include', ...rest }).then(
     async (res) => res.json()

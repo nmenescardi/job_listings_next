@@ -1,4 +1,4 @@
-const Profile = () => {
+export const ProfileIcon = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -12,12 +12,12 @@ const Profile = () => {
       <text
         x="50%"
         y="50%"
-        alignment-baseline="middle"
-        text-anchor="middle"
-        font-size="28"
-        font-weight="400"
+        alignmentBaseline="middle"
+        textAnchor="middle"
+        fontSize="28"
+        fontWeight="400"
         dy=".1em"
-        dominant-baseline="middle"
+        dominantBaseline="middle"
         fill="#FFFFFF"
       >
         N
@@ -25,5 +25,3 @@ const Profile = () => {
     </svg>
   );
 };
-
-export default Profile;

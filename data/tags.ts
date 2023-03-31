@@ -1,5 +1,3 @@
-import { Tags } from '@/utils/types';
-
 export const tags: string[] = [
   'a11y',
   'accessibility',

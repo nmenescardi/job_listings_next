@@ -17,11 +17,11 @@ const mockFetch = (tagsMockAPI: string[], listingsMockAPI: ListingsMockAPI) =>
     let responseData = {};
 
     if (typeof args === 'string') {
-      if (args.startsWith('/tags')) {
+      if (args.startsWith('/api/tags')) {
         responseData = tagsMockAPI;
       }
 
-      if (args.startsWith('/listings')) {
+      if (args.startsWith('/api/listings')) {
         const page = args.match(/page=(\d+)/);
         responseData = listingsMockAPI(page ? +page[1] : 1);
       }
@@ -54,6 +54,7 @@ describe('Table component', () => {
     );
 
     expect(tableElement).toBeInTheDocument();
+    // screen.debug(tableElement, 100000);
 
     expect(tableElement).toHaveTextContent(firstListing.title);
     expect(tableElement).toHaveTextContent(firstListing.salary_range);
