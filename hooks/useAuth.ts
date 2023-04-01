@@ -52,6 +52,7 @@ export const useAuth = ({
 
     axios
       .post('/api/auth/login', props)
+
       .then(() => mutate())
       .catch((error) => {
         setApiError(error?.response?.data?.message);
@@ -61,14 +62,20 @@ export const useAuth = ({
 
   const logout = async () => {
     if (!error) {
-      await axios.post('/api/auth/logout').then(() => mutate());
-    }
+      await csrf();
 
-    window.location.pathname = '/auth/login';
+      await axios
+        .post('/api/auth/logout')
+        .then(() => mutate())
+        .catch((error) => console.error(error))
+        .finally(() => {
+          router.push('/auth/login');
+        });
+    }
   };
 
   useEffect(() => {
-    if (middleware === 'guest' && redirectIfAuthenticated && user) {
+    if (middleware === 'guest' && redirectIfAuthenticated && user && !error) {
       router.push(redirectIfAuthenticated);
     }
 
