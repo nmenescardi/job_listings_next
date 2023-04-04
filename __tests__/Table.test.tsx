@@ -157,12 +157,20 @@ describe('Table component', () => {
     });
     expect(hasPaginationText(paginationText(), '3', '3')).toBe(true);
 
+    // when the current page is the last one => last page and next page should be disabled
+    expect(screen.getByTestId('pagination__next')).toBeDisabled();
+    expect(screen.getByTestId('pagination__last')).toBeDisabled();
+
     // click on first page
     const firstPageButton = screen.getByTestId('pagination__first');
     await act(async () => {
       fireEvent.click(firstPageButton);
     });
     expect(hasPaginationText(paginationText(), '1', '3')).toBe(true);
+
+    // when the current page is the first one => first page and previous page should be disabled
+    expect(screen.getByTestId('pagination__first')).toBeDisabled();
+    expect(screen.getByTestId('pagination__previous')).toBeDisabled();
   });
 
   test('applying filters adds specific arguments in the query string when fetching listings.', async () => {

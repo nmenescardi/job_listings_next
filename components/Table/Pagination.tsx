@@ -22,21 +22,27 @@ const Pagination: React.FC<PaginationProps> = ({
       >
         <button
           data-testid="pagination__first"
-          className="border rounded p-1"
+          className={`border rounded p-1 ${
+            pagination?.currentPage === 1 && 'cursor-not-allowed'
+          }`}
           onClick={() => {
+            if (pagination?.currentPage === 1) return;
             setPagination((pagination) => ({
               ...pagination,
               currentPage: 1,
             }));
           }}
-          // disabled={!table.getCanPreviousPage()}
+          disabled={pagination?.currentPage === 1}
         >
           {'<<'}
         </button>
         <button
           data-testid="pagination__previous"
-          className="border rounded p-1"
+          className={`border rounded p-1 ${
+            pagination?.currentPage === 1 && 'cursor-not-allowed'
+          }`}
           onClick={() => {
+            if (pagination?.currentPage === 1) return;
             setPagination((pagination) => ({
               ...pagination,
               currentPage: pagination?.currentPage
@@ -44,14 +50,18 @@ const Pagination: React.FC<PaginationProps> = ({
                 : 1,
             }));
           }}
-          // disabled={!table.getCanPreviousPage()}
+          disabled={pagination?.currentPage === 1}
         >
           {'<'}
         </button>
         <button
           data-testid="pagination__next"
-          className="border rounded p-1"
+          className={`border rounded p-1 ${
+            pagination?.currentPage === pagination?.lastPage &&
+            'cursor-not-allowed'
+          }`}
           onClick={() => {
+            if (pagination?.currentPage === pagination?.lastPage) return;
             setPagination((pagination) => ({
               ...pagination,
               currentPage: pagination?.currentPage
@@ -59,20 +69,24 @@ const Pagination: React.FC<PaginationProps> = ({
                 : 1,
             }));
           }}
-          // disabled={!table.getCanNextPage()}
+          disabled={pagination?.currentPage === pagination?.lastPage}
         >
           {'>'}
         </button>
         <button
           data-testid="pagination__last"
-          className="border rounded p-1"
+          className={`border rounded p-1 ${
+            pagination?.currentPage === pagination?.lastPage &&
+            'cursor-not-allowed'
+          }`}
           onClick={() => {
+            if (pagination?.currentPage === pagination?.lastPage) return;
             setPagination((pagination) => ({
               ...pagination,
               currentPage: pagination?.lastPage,
             }));
           }}
-          // disabled={!table.getCanNextPage()}
+          disabled={pagination?.currentPage === pagination?.lastPage}
         >
           {'>>'}
         </button>
