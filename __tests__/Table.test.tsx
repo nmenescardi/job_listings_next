@@ -54,14 +54,21 @@ describe('Table component', () => {
     );
 
     expect(tableElement).toBeInTheDocument();
-    // screen.debug(tableElement, 100000);
 
-    expect(tableElement).toHaveTextContent(firstListing.title);
-    expect(tableElement).toHaveTextContent(firstListing.salary_range);
-    expect(tableElement).toHaveTextContent(firstListing.tags[0]);
-    expect(tableElement).toHaveTextContent(firstListing.tags[1]);
-    expect(tableElement).toHaveTextContent(firstListing.tags[2]);
-    expect(tableElement).toHaveTextContent(firstListing.location);
+    const firstRow = await waitFor(() =>
+      screen.getByTestId('listing-table-row-0')
+    );
+
+    expect(firstRow).toBeInTheDocument();
+
+    // screen.debug(firstRow, 100000);
+
+    expect(firstRow).toHaveTextContent(firstListing.title);
+    expect(firstRow).toHaveTextContent(firstListing.salary_range);
+    expect(firstRow).toHaveTextContent(firstListing.tags[0]);
+    expect(firstRow).toHaveTextContent(firstListing.tags[1]);
+    expect(firstRow).toHaveTextContent(firstListing.tags[2]);
+    expect(firstRow).toHaveTextContent(firstListing.location);
 
     const linkElement = screen.getByRole('link', { name: firstListing.title });
     expect(linkElement).toBeInTheDocument();

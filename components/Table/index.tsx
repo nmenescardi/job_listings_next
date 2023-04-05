@@ -10,33 +10,27 @@ import {
 
 import useListings from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
-
+import { initialFilters, useFilters } from '@/hooks/useFilters';
 import { Listing } from '@/utils/types';
 
-import { FiltersType, Tags, PaginationType } from '@/utils/types';
+import { Tags, PaginationType } from '@/utils/types';
 
 import Filters from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
 import Pagination from '@/components/Table/Pagination';
 
-const initialFilters: FiltersType = {
-  onlyRemote: false,
-  provider: undefined,
-  tags: undefined,
-};
-
 const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
 
   const [hideFilters, setHideFilters] = useState(true);
-  const [activeFilters, setActiveFilters] =
-    useState<FiltersType>(initialFilters);
-  const [newFilters, setNewFilters] = useState<FiltersType>(initialFilters);
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
   const [perPage, setPerPage] = useState(10);
   const [pagination, setPagination] = useState<PaginationType>();
+
+  const { activeFilters, newFilters, setActiveFilters, setNewFilters } =
+    useFilters();
 
   const {
     data: dataListings,
@@ -132,7 +126,7 @@ const Table = () => {
   };
 
   if (loadingListings) {
-    return <div>Loading...</div>;
+    // return <div>Loading...</div>; // TODO: add loading component
   }
   if (error) {
     return <div>Error fetching data</div>;
@@ -181,7 +175,7 @@ const Table = () => {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
+              <tr key={row.id} data-testid={`listing-table-row-${row.id}`}>
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}

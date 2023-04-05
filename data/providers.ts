@@ -15,3 +15,5 @@ export const providers: Provider[] = [
   { value: 'ThemUse', label: 'ThemUse' },
   { value: 'Lensa', label: 'Lensa' },
 ];
+
+export const providersList = providers.map((provider) => provider.value);

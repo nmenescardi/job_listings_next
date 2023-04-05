@@ -1,5 +1,3 @@
-// global.fetch = require('jest-fetch-mock');
-// fetch.mockResponse(JSON.stringify({ testing: true }));
 import '@testing-library/jest-dom';
 import fetch from 'cross-fetch';
 global.fetch = fetch;
