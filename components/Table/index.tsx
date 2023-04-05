@@ -19,6 +19,8 @@ import Filters from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
 import Pagination from '@/components/Table/Pagination';
 
+import { Oval } from 'react-loader-spinner';
+
 const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
 
@@ -125,9 +127,6 @@ const Table = () => {
     setPerPage(perPage);
   };
 
-  if (loadingListings) {
-    // return <div>Loading...</div>; // TODO: add loading component
-  }
   if (error) {
     return <div>Error fetching data</div>;
   }
@@ -135,6 +134,20 @@ const Table = () => {
   return (
     <>
       <section data-testid="job-listings-table" className="w-full">
+        {loadingListings && (
+          <div className="fixed top-0 left-0 w-full h-full inset-0 z-[9999]">
+            <div className="flex justify-center items-center w-full h-full bg-black bg-opacity-60">
+              <Oval
+                height="80"
+                width="80"
+                color="#3B82F6"
+                ariaLabel="loading"
+                secondaryColor="white"
+              />
+            </div>
+          </div>
+        )}
+
         <Filters
           hideFilters={hideFilters}
           setHideFilters={setHideFilters}
