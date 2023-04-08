@@ -61,17 +61,15 @@ export const useAuth = ({
   };
 
   const logout = async () => {
-    if (!error) {
-      await csrf();
+    await csrf();
 
-      await axios
-        .post('/api/auth/logout')
-        .then(() => mutate())
-        .catch((error) => console.error(error))
-        .finally(() => {
-          router.push('/auth/login');
-        });
-    }
+    await axios
+      .post('/api/auth/logout')
+      .then(() => mutate())
+      .catch((error) => console.error(error))
+      .finally(() => {
+        router.push('/auth/login');
+      });
   };
 
   useEffect(() => {
