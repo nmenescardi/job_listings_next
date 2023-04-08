@@ -49,6 +49,4 @@ describe('ProfileMenu component', () => {
 
     await waitFor(() => expect(mockLogout).toBeCalledTimes(1));
   });
-
-  //TODO: calling logout function
 });
