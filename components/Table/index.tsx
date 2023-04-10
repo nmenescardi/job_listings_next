@@ -17,7 +17,7 @@ import { Tags, PaginationType } from '@/utils/types';
 
 import Filters from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
-import Pagination from '@/components/Table/Pagination';
+import Pagination from '@/components/Common/Pagination';
 
 import { Oval } from 'react-loader-spinner';
 

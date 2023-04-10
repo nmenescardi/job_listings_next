@@ -12,7 +12,7 @@ import {
 
 import { PaginationType } from '@/utils/types';
 
-import Pagination from '@/components/Table/Pagination';
+import Pagination from '@/components/Common/Pagination';
 
 import { Oval } from 'react-loader-spinner';
 
