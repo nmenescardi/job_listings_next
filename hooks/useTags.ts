@@ -12,3 +12,13 @@ const useTags = () => {
 };
 
 export default useTags;
+
+export const useTagsWithAliases = () => {
+  const { data, isLoading, error } = useSWR(
+    `${API_DOMAIN}/tagsWithAliases`,
+    fetcher,
+    swrOptions
+  );
+
+  return { data, isLoading, error };
+};

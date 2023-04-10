@@ -19,7 +19,7 @@ function SignInForm() {
 
   const { login } = useAuth({
     middleware: 'guest',
-    redirectIfAuthenticated: '/listings/',
+    redirectIfAuthenticated: 'admin/listings/',
   });
 
   return (

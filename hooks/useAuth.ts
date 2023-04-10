@@ -11,7 +11,7 @@ interface UseAuthProps {
 
 export const useAuth = ({
   middleware,
-  redirectIfAuthenticated = '/listings/',
+  redirectIfAuthenticated = 'admin/listings/',
 }: UseAuthProps = {}) => {
   const router = useRouter();
 

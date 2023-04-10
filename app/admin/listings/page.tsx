@@ -1,4 +1,4 @@
-import styles from './page.module.css';
+import styles from '@/app/admin/page.module.css';
 import Table from '@/components/Table';
 
 export default function Home() {

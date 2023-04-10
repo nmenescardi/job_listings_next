@@ -32,8 +32,6 @@ describe('useListings', () => {
       useListings(activeFilters, perPage, currentPage)
     );
 
-    console.log(result);
-
     expect(useSWR).toBeCalledTimes(1);
 
     const useSwrAny = useSWR as any; // don't judge me
