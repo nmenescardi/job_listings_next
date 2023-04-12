@@ -31,3 +31,13 @@ export type PaginationType = {
   lastPage?: number;
   total?: number;
 };
+
+export interface TagModel {
+  id?: number;
+  name: string;
+  type: string;
+  aliases?: {
+    id?: number;
+    alias: string;
+  }[];
+}

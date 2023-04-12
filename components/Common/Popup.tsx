@@ -1,12 +1,13 @@
 'use client';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { useOnClickOutside } from 'usehooks-ts';
 interface PopupProps {
   children?: React.ReactNode;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Popup: React.FC<PopupProps> = ({ children }) => {
-  const [open, setOpen] = useState(true);
+const Popup: React.FC<PopupProps> = ({ children, open, setOpen }) => {
   const ref = useRef(null);
 
   const handleOnClose = () => {
