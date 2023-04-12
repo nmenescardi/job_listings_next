@@ -8,6 +8,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
 
 import { PaginationType, TagModel } from '@/utils/types';
@@ -35,6 +36,8 @@ interface TypeRow extends TagModel {
 
 const TagsTable = () => {
   const columnHelper = createColumnHelper<TypeRow>();
+
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const [perPage, setPerPage] = useState(10);
   const [pagination, setPagination] = useState<PaginationType>();
@@ -113,8 +116,13 @@ const TagsTable = () => {
   const table = useReactTable({
     data: !loading ? dataTags : [],
     columns,
+    state: {
+      globalFilter,
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   const handlePerPageChange = (perPage: number) => {
@@ -167,8 +175,21 @@ const TagsTable = () => {
           </div>
         )}
 
-        <div className="flex flex-col items-end">
-          <div>
+        <div className="flex flex-col">
+          <div className="flex justify-between mb-4">
+            <div>
+              <label htmlFor="globalFilter" className="cursor-pointer mr-2">
+                Search:{' '}
+              </label>
+              <input
+                type="text"
+                id="globalFilter"
+                value={globalFilter ?? ''}
+                onChange={(e) => setGlobalFilter(String(e.target.value))}
+                className="p-2 font-lg shadow border border-block"
+                placeholder="Search all columns..."
+              />
+            </div>
             <Button
               data-testid="new-tag-button"
               size="xs"
