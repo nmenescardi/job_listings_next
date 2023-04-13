@@ -20,10 +20,16 @@ export interface Provider {
   label: string;
 }
 
+export interface Locations {
+  value: string;
+  label: string;
+}
+
 export type FiltersType = {
   onlyRemote?: boolean;
   provider?: MultiValue<Provider>;
   tags?: MultiValue<Tags>;
+  locations?: MultiValue<Tags>;
 };
 
 export type PaginationType = {

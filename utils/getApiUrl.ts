@@ -24,6 +24,13 @@ export const getApiUrl = (
       ']';
   }
 
+  if (activeFilters?.locations && activeFilters?.locations?.length > 0) {
+    url +=
+      '&locationsIn=[' +
+      activeFilters?.locations?.map((location) => location.value).join(',') +
+      ']';
+  }
+
   url += `&perPage=${perPage}`;
 
   url += `&page=${currentPage}`;

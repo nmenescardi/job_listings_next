@@ -14,6 +14,7 @@ const newState = {
     { value: 'reactjs', label: 'reactjs' },
     { value: 'typescript', label: 'typescript' },
   ],
+  locations: [{ value: 'United States', label: 'United States' }],
 };
 
 describe('testing useFilters.', () => {
@@ -57,6 +58,7 @@ describe('testing useFilters.', () => {
     searchParams.set('onlyRemote', '1');
     searchParams.set('providersIn', 'Indeed,LinkedIn');
     searchParams.set('tagsIn', 'reactjs,typescript');
+    searchParams.set('locationsIn', 'United States');
 
     (useSearchParams as jest.Mock).mockImplementation(() => searchParams);
 

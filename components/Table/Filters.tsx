@@ -7,6 +7,7 @@ import {
 import { Button, Icon } from '@tremor/react';
 import { providers } from '@/data/providers';
 import { FiltersType, Tags } from '@/utils/types';
+import { locations } from '@/data/locations';
 
 interface FiltersProps {
   hideFilters: boolean;
@@ -112,6 +113,26 @@ const Filters: React.FC<FiltersProps> = ({
               placeholder="Select tags to filter..."
               className="mt-1"
               value={newFilters.tags}
+            />
+          </div>
+
+          <div data-testid="locations-selector" className="mt-3">
+            <label htmlFor="locations_selector">Locations:</label>
+            <Select
+              // key={locationsKey}
+              name="locations_selector"
+              inputId="locations_selector"
+              onChange={(options) => {
+                setNewFilters((newFilters) => ({
+                  ...newFilters,
+                  locations: options,
+                }));
+              }}
+              isMulti
+              options={locations}
+              placeholder="Select locations to filter..."
+              className="mt-1"
+              value={newFilters.locations}
             />
           </div>
 

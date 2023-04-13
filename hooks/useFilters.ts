@@ -22,11 +22,15 @@ export const useFilters = () => {
     const onlyRemote = '1' === searchParams.get('onlyRemote');
     const providersInArg = searchParams.get('providersIn') ?? '';
     const tagsInArg = searchParams.get('tagsIn') ?? '';
+    const locationsInArg = searchParams.get('locationsIn') ?? '';
 
     const providersIn = providersInArg
       .split(',')
       .filter((provider) => providersList.includes(provider));
     const tagsIn = tagsInArg.split(',').filter((tag) => tag.length > 0);
+    const locationsIn = locationsInArg
+      .split(',')
+      .filter((location) => location.length > 0);
 
     const changeFiltersCallback = (filters: FiltersType) => ({
       ...filters,
@@ -37,6 +41,10 @@ export const useFilters = () => {
       tags: tagsIn.map((tag) => ({
         label: tag,
         value: tag,
+      })),
+      locations: locationsIn.map((location) => ({
+        label: location,
+        value: location,
       })),
       onlyRemote,
     });
