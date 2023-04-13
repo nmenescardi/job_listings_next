@@ -110,15 +110,6 @@ export const listings: Listing[] = [
     external_link: 'https://www.remoteco.com/jobs/full-stack-developer',
   },
   {
-    title: 'Software Engineer',
-    salary_range: '$80,000 - $120,000',
-    provider: 'LinkedIn',
-    created_at: '2023-02-28',
-    tags: ['Java', 'Spring', 'MySQL'],
-    location: 'Boston, MA',
-    external_link: 'https://www.linkedin.com/jobs/software-engineer',
-  },
-  {
     title: 'Mobile App Developer',
     salary_range: '$70,000 - $110,000',
     provider: 'Remotive',

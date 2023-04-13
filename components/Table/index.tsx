@@ -28,7 +28,7 @@ const Table = () => {
   const [loadingResults, setLoadingResults] = useState(false);
   const [listings, setListings] = useState<Listing[]>([]);
   const [tags, setTags] = useState<Tags[]>();
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(50);
   const [pagination, setPagination] = useState<PaginationType>();
 
   const { activeFilters, newFilters, setActiveFilters, setNewFilters } =
@@ -126,6 +126,10 @@ const Table = () => {
     table.setPageSize(perPage);
     setPerPage(perPage);
   };
+
+  useEffect(() => {
+    table.setPageSize(perPage);
+  }, [table, perPage]);
 
   if (error) {
     return <div>Error fetching data</div>;

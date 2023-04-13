@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Button, Icon } from '@tremor/react';
 import { providers } from '@/data/providers';
-import { FiltersType, Tags, Provider } from '@/utils/types';
+import { FiltersType, Tags } from '@/utils/types';
 
 interface FiltersProps {
   hideFilters: boolean;
