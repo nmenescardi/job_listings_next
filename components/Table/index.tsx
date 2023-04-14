@@ -18,6 +18,7 @@ import { Tags, PaginationType } from '@/utils/types';
 import Filters from '@/components/Table/Filters';
 import ActiveFilters from '@/components/Table/ActiveFilters';
 import Pagination from '@/components/Common/Pagination';
+import Bookmarks from '@/components/Bookmarks';
 
 import { Oval } from 'react-loader-spinner';
 
@@ -151,6 +152,8 @@ const Table = () => {
             </div>
           </div>
         )}
+
+        <Bookmarks />
 
         <Filters
           hideFilters={hideFilters}
