@@ -1,7 +1,7 @@
 import { Listing } from '@/utils/types';
 
 export interface ListingsMockAPIData {
-  data: Listing[];
+  data: ListingMock[];
   current_page: number;
   total: number;
   last_page: number;
@@ -9,7 +9,8 @@ export interface ListingsMockAPIData {
 
 export type ListingsMockAPI = (page?: number) => ListingsMockAPIData;
 
-export const listings: Listing[] = [
+export type ListingMock = Omit<Listing, 'id' | 'already_applied_to_company'>;
+export const listings: ListingMock[] = [
   {
     title: 'Software Engineer',
     salary_range: '$80,000 - $120,000',
