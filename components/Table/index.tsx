@@ -8,7 +8,10 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-import useListings, { setListingAsVisited } from '@/hooks/useListings';
+import useListings, {
+  setListingAsVisited,
+  setListingAsApplied,
+} from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
 import { initialFilters, useFilters } from '@/hooks/useFilters';
 import { Listing } from '@/utils/types';
@@ -137,6 +140,28 @@ const Table = () => {
     }),
     columnHelper.accessor('status', {
       header: 'Status',
+
+      cell: ({ row }) => (
+        <button
+          className="text-blue-500 hover:text-blue-700 underline flex items-center"
+          onClick={(event) => {
+            if (event.button === 0) {
+              'VIEWED' === row.original?.status
+                ? setListingAsApplied(row.original.id)
+                : setListingAsVisited(row.original.id);
+            }
+          }}
+          onAuxClick={(event) => {
+            if (event.button === 1) {
+              'VIEWED' === row.original?.status
+                ? setListingAsApplied(row.original.id)
+                : setListingAsVisited(row.original.id);
+            }
+          }}
+        >
+          {row.original?.status}
+        </button>
+      ),
     }),
   ];
 

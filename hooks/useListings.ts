@@ -26,5 +26,12 @@ export const setListingAsVisited = async (listingId: number) => {
     .then((res) => console.log(res.data))
     .catch((response) => console.error(response));
 };
+export const setListingAsApplied = async (listingId: number) => {
+  await axios.get('/sanctum/csrf-cookie');
+  await axios
+    .post(`${API_DOMAIN}/listings/${listingId}/application/applied`)
+    .then((res) => console.log(res.data))
+    .catch((response) => console.error(response));
+};
 
 export default useListings;
