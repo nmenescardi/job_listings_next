@@ -1,6 +1,7 @@
 import { MultiValue } from 'react-select';
 
 export type Listing = {
+  id: number;
   title: string;
   salary_range: string;
   provider: string;
@@ -8,6 +9,7 @@ export type Listing = {
   tags: string[];
   location: string;
   external_link?: string;
+  status?: string;
 };
 
 export interface Tags {

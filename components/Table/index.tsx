@@ -8,7 +8,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-import useListings from '@/hooks/useListings';
+import useListings, { setListingAsVisited } from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
 import { initialFilters, useFilters } from '@/hooks/useFilters';
 import { Listing } from '@/utils/types';
@@ -21,6 +21,17 @@ import Pagination from '@/components/Common/Pagination';
 import Bookmarks from '@/components/Bookmarks';
 
 import { Oval } from 'react-loader-spinner';
+
+const getBackgroundColor = (status?: string) => {
+  switch (status?.toLocaleLowerCase()) {
+    case 'viewed':
+      return '#f0f0f0';
+    case 'applied':
+      return '#d9f2d9';
+    default:
+      return 'white';
+  }
+};
 
 const Table = () => {
   const columnHelper = createColumnHelper<Listing>();
@@ -93,6 +104,16 @@ const Table = () => {
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-500 hover:text-blue-700 underline flex items-center"
+          onClick={(event) => {
+            if (event.button === 0) {
+              setListingAsVisited(row.original.id);
+            }
+          }}
+          onAuxClick={(event) => {
+            if (event.button === 1) {
+              setListingAsVisited(row.original.id);
+            }
+          }}
         >
           {row.original.title}
         </a>
@@ -113,6 +134,9 @@ const Table = () => {
     }),
     columnHelper.accessor('location', {
       header: 'Location',
+    }),
+    columnHelper.accessor('status', {
+      header: 'Status',
     }),
   ];
 
@@ -195,7 +219,13 @@ const Table = () => {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} data-testid={`listing-table-row-${row.id}`}>
+              <tr
+                key={row.id}
+                data-testid={`listing-table-row-${row.id}`}
+                style={{
+                  backgroundColor: getBackgroundColor(row.getValue('status')),
+                }}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
