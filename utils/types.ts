@@ -11,6 +11,7 @@ export type Listing = {
   external_link?: string;
   status?: string;
   company?: string;
+  already_applied_to_company: boolean;
 };
 
 export interface Tags {

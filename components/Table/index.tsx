@@ -124,6 +124,24 @@ const Table = () => {
     }),
     columnHelper.accessor('company', {
       header: 'Company',
+      cell: ({ row }) => {
+        return (
+          <span
+            className={`${
+              row.original.already_applied_to_company
+                ? 'text-red-500 font-semibold'
+                : 'text-black'
+            }`}
+            title={`${
+              row.original.already_applied_to_company
+                ? 'Already applied to this company.'
+                : "Company's Name"
+            }`}
+          >
+            {row.original?.company}
+          </span>
+        );
+      },
     }),
     columnHelper.accessor('salary_range', {
       header: 'Salary Range',
