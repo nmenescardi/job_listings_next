@@ -122,6 +122,9 @@ const Table = () => {
         </a>
       ),
     }),
+    columnHelper.accessor('company', {
+      header: 'Company',
+    }),
     columnHelper.accessor('salary_range', {
       header: 'Salary Range',
     }),

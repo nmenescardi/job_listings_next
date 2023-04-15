@@ -10,6 +10,7 @@ export type Listing = {
   location: string;
   external_link?: string;
   status?: string;
+  company?: string;
 };
 
 export interface Tags {
