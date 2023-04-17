@@ -18,11 +18,11 @@ const useListings = (
   return { data, isLoading, error };
 };
 
-const createListingUpdater = (apiEndpoint, newStatus) => {
+const createListingUpdater = (apiEndpoint: string, newStatus: string) => {
   return () => {
     const { cache, mutate } = useSWRConfig();
 
-    const updateListingStatus = async (listingId) => {
+    const updateListingStatus = async (listingId: number) => {
       try {
         const response = await axios.post(
           `${API_DOMAIN}/listings/${listingId}${apiEndpoint}`
