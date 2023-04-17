@@ -18,61 +18,65 @@ const useListings = (
   return { data, isLoading, error };
 };
 
-export const useSetListingAsVisited = () => {
-  const { cache, mutate } = useSWRConfig();
+const createListingUpdater = (apiEndpoint, newStatus) => {
+  return () => {
+    const { cache, mutate } = useSWRConfig();
 
-  const setListingAsVisited = async (listingId: number) => {
-    try {
-      const response = await axios.post(
-        `/api/listings/${listingId}/application/viewed`
-      );
+    const updateListingStatus = async (listingId) => {
+      try {
+        const response = await axios.post(
+          `${API_DOMAIN}/listings/${listingId}${apiEndpoint}`
+        );
 
-      if (
-        200 === response.status &&
-        'viewed' === response?.data?.application.status
-      ) {
-        for (const key of cache.keys()) {
-          if (key.startsWith(`${API_DOMAIN}/listings`)) {
-            mutate<Listing[]>(key, (currentData: Listing[] | undefined) => {
-              const currentListings = currentData as Listing[];
+        if (
+          200 === response.status &&
+          newStatus === response?.data?.application.status
+        ) {
+          for (const key of cache.keys()) {
+            if (key.startsWith(`${API_DOMAIN}/listings`)) {
+              mutate<Listing[]>(key, (currentData: Listing[] | undefined) => {
+                const currentListings = currentData as Listing[];
 
-              if (currentListings && Array.isArray(currentListings)) {
-                const listingIndex = currentListings.findIndex(
-                  (listing) => listing.id === listingId
-                );
+                if (currentListings && Array.isArray(currentListings)) {
+                  const listingIndex = currentListings.findIndex(
+                    (listing) => listing.id === listingId
+                  );
 
-                if (listingIndex !== -1) {
-                  const updatedListing = {
-                    ...currentListings[listingIndex],
-                    status: 'viewed',
-                  };
+                  if (listingIndex !== -1) {
+                    const updatedListing = {
+                      ...currentListings[listingIndex],
+                      status: newStatus,
+                    };
 
-                  return [
-                    ...currentListings.slice(0, listingIndex),
-                    updatedListing,
-                    ...currentListings.slice(listingIndex + 1),
-                  ];
+                    return [
+                      ...currentListings.slice(0, listingIndex),
+                      updatedListing,
+                      ...currentListings.slice(listingIndex + 1),
+                    ];
+                  }
                 }
-              }
-              return currentListings;
-            });
+                return currentListings;
+              });
+            }
           }
         }
+      } catch (error) {
+        console.error(`Error setting listing as ${newStatus}`, error);
       }
-    } catch (error) {
-      console.error('Error setting listing as viewed', error);
-    }
+    };
+
+    return updateListingStatus;
   };
-
-  return setListingAsVisited;
 };
 
-export const setListingAsApplied = async (listingId: number) => {
-  await axios.get('/sanctum/csrf-cookie');
-  await axios
-    .post(`${API_DOMAIN}/listings/${listingId}/application/applied`)
-    .then((res) => console.log(res.data))
-    .catch((response) => console.error(response));
-};
+export const useSetListingAsVisited = createListingUpdater(
+  '/application/viewed',
+  'viewed'
+);
+
+export const useSetListingAsApplied = createListingUpdater(
+  '/application/applied',
+  'applied'
+);
 
 export default useListings;

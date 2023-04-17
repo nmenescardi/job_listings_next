@@ -10,7 +10,7 @@ import {
 
 import useListings, {
   useSetListingAsVisited,
-  setListingAsApplied,
+  useSetListingAsApplied,
 } from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
 import { initialFilters, useFilters } from '@/hooks/useFilters';
@@ -58,6 +58,7 @@ const Table = () => {
   const { data: dataTags, isLoading: loadingTags } = useTags();
 
   const setListingAsVisited = useSetListingAsVisited();
+  const setListingAsApplied = useSetListingAsApplied();
 
   useEffect(() => {
     if (!loadingListings && dataListings) {
