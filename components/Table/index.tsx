@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-table';
 
 import useListings, {
-  setListingAsVisited,
+  useSetListingAsVisited,
   setListingAsApplied,
 } from '@/hooks/useListings';
 import useTags from '@/hooks/useTags';
@@ -56,6 +56,8 @@ const Table = () => {
   } = useListings(activeFilters, perPage, pagination?.currentPage);
 
   const { data: dataTags, isLoading: loadingTags } = useTags();
+
+  const setListingAsVisited = useSetListingAsVisited();
 
   useEffect(() => {
     if (!loadingListings && dataListings) {

@@ -1,6 +1,6 @@
-import { FiltersType } from '@/utils/types';
+import { FiltersType, Listing } from '@/utils/types';
 import { API_DOMAIN, fetcher, swrOptions } from '@/hooks/common';
-import useSWR from 'swr';
+import useSWR, { mutate, useSWRConfig } from 'swr';
 import { getApiUrl } from '@/utils/getApiUrl';
 import axios from '@/utils/axios';
 
@@ -18,14 +18,55 @@ const useListings = (
   return { data, isLoading, error };
 };
 
-// TODO: use SWR and mutations
-export const setListingAsVisited = async (listingId: number) => {
-  await axios.get('/sanctum/csrf-cookie');
-  await axios
-    .post(`${API_DOMAIN}/listings/${listingId}/application/viewed`)
-    .then((res) => console.log(res.data))
-    .catch((response) => console.error(response));
+export const useSetListingAsVisited = () => {
+  const { cache, mutate } = useSWRConfig();
+
+  const setListingAsVisited = async (listingId: number) => {
+    try {
+      const response = await axios.post(
+        `/api/listings/${listingId}/application/viewed`
+      );
+
+      if (
+        200 === response.status &&
+        'viewed' === response?.data?.application.status
+      ) {
+        for (const key of cache.keys()) {
+          if (key.startsWith(`${API_DOMAIN}/listings`)) {
+            mutate<Listing[]>(key, (currentData: Listing[] | undefined) => {
+              const currentListings = currentData as Listing[];
+
+              if (currentListings && Array.isArray(currentListings)) {
+                const listingIndex = currentListings.findIndex(
+                  (listing) => listing.id === listingId
+                );
+
+                if (listingIndex !== -1) {
+                  const updatedListing = {
+                    ...currentListings[listingIndex],
+                    status: 'viewed',
+                  };
+
+                  return [
+                    ...currentListings.slice(0, listingIndex),
+                    updatedListing,
+                    ...currentListings.slice(listingIndex + 1),
+                  ];
+                }
+              }
+              return currentListings;
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error setting listing as viewed', error);
+    }
+  };
+
+  return setListingAsVisited;
 };
+
 export const setListingAsApplied = async (listingId: number) => {
   await axios.get('/sanctum/csrf-cookie');
   await axios
